@@ -36,7 +36,14 @@ class BisectTest {
 
     @Test
     void skipVersionswhereYouCanNotDecideIfItIsGoodOrBad() {
+        RecordingScene scene = suspects("good", "2nd good", "center skip", "1st bad", "bad");
+        BisectOutcome outcome = bisect(version("good"), version("bad"), scene);
+        assertThat(outcome.result).hasValue(bisectResult(suspect(version("2nd good")), suspect(version("1st bad"))));
+        assertThat(scene.checkedVersions).containsExactlyElementsIn(versions("center skip","1st bad", "2nd good")).inOrder();
+    }
 
+    private List<Version> versions(String... versionStrings) {
+        return Arrays.stream(versionStrings).map(Version::version).collect(Collectors.toList());
     }
 
     private RecordingScene suspects(String ... versions) {

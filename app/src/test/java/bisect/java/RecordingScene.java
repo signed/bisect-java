@@ -34,6 +34,9 @@ public class RecordingScene implements Scene {
             throw new RuntimeException("you should not check known bad");
         }
         this.checkedVersions.add(version);
+        if (versionString.contains("skip")) {
+            return CheckResult.Skip;
+        }
         if (versionString.contains("good")) {
             return CheckResult.Good;
         }
