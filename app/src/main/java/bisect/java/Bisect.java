@@ -5,22 +5,37 @@ import java.util.Optional;
 
 import static bisect.java.BisectOutcome.bisectOutcome;
 import static bisect.java.BisectResult.bisectResult;
+import static bisect.java.Lists.splitOnCenter;
 
 public class Bisect {
 
     public static BisectOutcome bisect(Version knownGood, Version knownBad, Scene scene) {
-        List<Suspect> suspects = scene.suspects();
+        List<Suspect> extendedSuspects = scene.suspects();
 
-        Optional<Suspect> lastKnowGood = Optional.empty();
-        Optional<Suspect> firstKnowBad = Optional.empty();
+        Optional<Suspect> lastKnowGood = extendedSuspects.stream().filter(suspect -> knownGood.equals(suspect.version()) ).findFirst();
+        Optional<Suspect> firstKnowBad = extendedSuspects.stream().filter(suspect -> knownBad.equals(suspect.version())).findFirst();
+        List<Suspect> suspects = extendedSuspects.subList(1, extendedSuspects.size() - 1);
+        Split<Suspect> split = splitOnCenter(suspects);
 
-        for (Suspect suspect : suspects) {
-            switch (scene.check(suspect)) {
-                case Good -> lastKnowGood = Optional.of(suspect);
-                case Bad -> firstKnowBad = firstKnowBad.or(() -> Optional.of(suspect));
+        while (split.center().isPresent()) {
+            Suspect toCheck = split.center().orElseThrow();
+            CheckResult result = scene.check(toCheck);
+            switch (result) {
+                case Good -> lastKnowGood = Optional.of(toCheck);
+                case Bad -> firstKnowBad = Optional.of(toCheck);
             }
+
+            split = splitOnCenter(remainintSuspectsFrom(split, result));
         }
         return bisectOutcome(bisectResult(lastKnowGood.orElseThrow(), firstKnowBad.orElseThrow()));
+    }
+
+    private static List<Suspect> remainintSuspectsFrom(Split<Suspect> split, CheckResult result) {
+        return switch (result) {
+            case Skip -> Lists.concat(split.left(), split.right());
+            case Bad -> split.left();
+            case Good -> split.right();
+        };
     }
 
     public static void main(String[] args) {

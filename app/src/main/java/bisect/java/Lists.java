@@ -11,7 +11,7 @@ import static java.util.Optional.empty;
 
 public class Lists {
 
-    public static <T> Split<T> split(List<T> input) {
+    public static <T> Split<T> splitOnCenter(List<T> input) {
         int size = input.size();
         if (size == 0) {
             return new Split<>(emptyList(), empty(), emptyList());
@@ -22,5 +22,14 @@ public class Lists {
         Optional<T> center = Optional.of(input.get(leftSize));
         List<T> right = input.subList(leftSize + 1, size);
         return new Split<>(left, center, right);
+    }
+
+    @SafeVarargs
+    public static <T> List<T> concat(List<T>... lists) {
+        List<T> result = new ArrayList<>();
+        for (List<T> list : lists) {
+            result.addAll(list);
+        }
+        return result;
     }
 }

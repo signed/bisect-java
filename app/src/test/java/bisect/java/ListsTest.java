@@ -12,7 +12,7 @@ class ListsTest {
 
     @Test
     void splitEmptyArray() {
-        Split<String> split = Lists.split(Collections.emptyList());
+        Split<String> split = Lists.splitOnCenter(Collections.emptyList());
         assertThat(split.left()).isEmpty();
         assertThat(split.center()).isEmpty();
         assertThat(split.right()).isEmpty();
@@ -20,7 +20,7 @@ class ListsTest {
 
     @Test
     void putSingleElementIntoCenter() {
-        Split<String> split = Lists.split(List.of("one"));
+        Split<String> split = Lists.splitOnCenter(List.of("one"));
         assertThat(split.left()).isEmpty();
         assertThat(split.center()).hasValue("one");
         assertThat(split.right()).isEmpty();
@@ -28,7 +28,7 @@ class ListsTest {
 
     @Test
     void putExcessElementIntoLeft() {
-        Split<String> split = Lists.split(List.of("one", "two"));
+        Split<String> split = Lists.splitOnCenter(List.of("one", "two"));
         assertThat(split.left()).containsExactly("one").inOrder();
         assertThat(split.center()).hasValue("two");
         assertThat(split.right()).isEmpty();
@@ -36,7 +36,7 @@ class ListsTest {
 
     @Test
     void whenPossibleDistributeEvenlyBetweenLeftAndRight() {
-        Split<String> split = Lists.split(List.of("left", "center", "right"));
+        Split<String> split = Lists.splitOnCenter(List.of("left", "center", "right"));
         assertThat(split.left()).containsExactly("left").inOrder();
         assertThat(split.center()).hasValue("center");
         assertThat(split.right()).containsExactly("right").inOrder();
@@ -44,7 +44,7 @@ class ListsTest {
 
     @Test
     void withMoreElements() {
-        Split<String> split = Lists.split(List.of("left", "left", "center", "right", "right"));
+        Split<String> split = Lists.splitOnCenter(List.of("left", "left", "center", "right", "right"));
         assertThat(split.left()).containsExactly("left", "left").inOrder();
         assertThat(split.center()).hasValue("center");
         assertThat(split.right()).containsExactly("right", "right").inOrder();
@@ -52,7 +52,7 @@ class ListsTest {
 
     @Test
     void withMoreElementsUneven() {
-        Split<String> split = Lists.split(List.of("left", "left", "left", "center", "right", "right"));
+        Split<String> split = Lists.splitOnCenter(List.of("left", "left", "left", "center", "right", "right"));
         assertThat(split.left()).containsExactly("left", "left", "left").inOrder();
         assertThat(split.center()).hasValue("center");
         assertThat(split.right()).containsExactly("right", "right").inOrder();

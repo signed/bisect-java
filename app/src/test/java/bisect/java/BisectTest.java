@@ -11,6 +11,7 @@ import static bisect.java.BisectResult.bisectResult;
 import static bisect.java.Suspect.suspect;
 import static bisect.java.Version.version;
 import static com.google.common.truth.Truth8.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 
 class BisectTest {
     @Test
@@ -20,10 +21,19 @@ class BisectTest {
     }
 
     @Test
+    void onlyCheckVersionsBetweenKnownGoodAndKnownBad() {
+        RecordingScene scene = suspects("good", "1st bad", "bad");
+        BisectOutcome outcome = bisect(version("good"), version("bad"), scene);
+        assertThat(outcome.result).hasValue(bisectResult(suspect(version("good")), suspect(version("1st bad"))));
+        assertThat(scene.checked).containsExactly(version("1st bad")).inOrder();
+    }
+
+    @Test
     void testTheCenterSuspectInsteadOfEverySingleOne(){
         RecordingScene scene = suspects("good", "2nd good", "center good", "1st bad", "bad");
         BisectOutcome outcome = bisect(version("good"), version("bad"), scene);
         assertThat(outcome.result).hasValue(bisectResult(suspect(version("center good")), suspect(version("1st bad"))));
+        assertThat(scene.checked).containsExactly(version("center good"), version("1st bad")).inOrder();
     }
 
     private RecordingScene suspects(String ... versions) {
