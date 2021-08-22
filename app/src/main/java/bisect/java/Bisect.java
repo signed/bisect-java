@@ -20,23 +20,23 @@ public class Bisect {
             return BisectOutcome.error("knownGood and knowBad are the same");
         }
 
-        List<Suspect> extendedSuspects = scene.suspects();
-        int knownGoodIndex = IntStream.range(0, extendedSuspects.size()).filter(index -> extendedSuspects.get(index).version().equals(knownGood)).findFirst().orElse(-1);
+        List<Suspect> suspects = scene.suspects();
+        int knownGoodIndex = IntStream.range(0, suspects.size()).filter(index -> suspects.get(index).version().equals(knownGood)).findFirst().orElse(-1);
         if (-1 == knownGoodIndex) {
             return BisectOutcome.error("good version not in suspects");
         }
-        Suspect lastKnowGood = extendedSuspects.get(knownGoodIndex);
+        Suspect lastKnowGood = suspects.get(knownGoodIndex);
 
-        int knownBadIndex = IntStream.range(0, extendedSuspects.size()).filter(index -> extendedSuspects.get(index).version().equals(knownBad)).findFirst().orElse(-1);
+        int knownBadIndex = IntStream.range(0, suspects.size()).filter(index -> suspects.get(index).version().equals(knownBad)).findFirst().orElse(-1);
         if (-1 == knownBadIndex) {
             return BisectOutcome.error("bad version not in suspects");
         }
-        Suspect firstKnowBad = extendedSuspects.get(knownBadIndex);
+        Suspect firstKnowBad = suspects.get(knownBadIndex);
         if (knownBadIndex < knownGoodIndex) {
             return BisectOutcome.error("bad version before good version");
         }
-        List<Suspect> suspects = extendedSuspects.subList(1, extendedSuspects.size() - 1);
-        Split<Suspect> split = splitOnCenter(suspects);
+        List<Suspect> candidates = suspects.subList(knownGoodIndex + 1, knownBadIndex);
+        Split<Suspect> split = splitOnCenter(candidates);
 
         while (split.center().isPresent()) {
             Suspect toCheck = split.center().orElseThrow();

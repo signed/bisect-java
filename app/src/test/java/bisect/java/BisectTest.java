@@ -23,7 +23,7 @@ class BisectTest {
 
     @Test
     void onlyCheckVersionsBetweenKnownGoodAndKnownBad() {
-        RecordingScene scene = suspects("good", "1st bad", "bad");
+        RecordingScene scene = suspects("before good", "good", "1st bad", "bad", "after bad");
         BisectResult success = bisectSuccess("good", "bad", scene);
 
         assertThat(success.lastGood()).isEqualTo(suspect(version("good")));
