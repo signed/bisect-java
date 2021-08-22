@@ -22,10 +22,8 @@ class BisectTest {
 
     @Test
     void onlyCheckVersionsBetweenKnownGoodAndKnownBad() {
-        RecordingScene scene = suspects("good", "1st bad", "bad");
-        BisectOutcome outcome = bisect(version("good"), version("bad"), scene);
+        BisectOutcome outcome = bisect(version("good"), version("bad"), suspects("good", "1st bad", "bad"));
         assertThat(outcome.result).hasValue(bisectResult(suspect(version("good")), suspect(version("1st bad"))));
-        assertThat(scene.checked).containsExactly(version("1st bad")).inOrder();
     }
 
     @Test
