@@ -8,7 +8,7 @@ class BisectOutcome {
         return new BisectOutcome(Optional.of(error), Optional.empty());
     }
 
-    public static BisectOutcome result(BisectResult result) {
+    public static BisectOutcome bisectOutcome(BisectResult result) {
         return new BisectOutcome(Optional.empty(), Optional.of(result));
     }
 

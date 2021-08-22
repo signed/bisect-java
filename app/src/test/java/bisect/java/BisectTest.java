@@ -23,9 +23,15 @@ class BisectTest {
         assertThat(outcome.result).hasValue(bisectResult(suspect(version("good")), suspect(version("bad"))));
     }
 
+    @Test
+    void testTheCenterSuspectInsteadOfEverySingleOne(){
+        RecordingScene scene = suspects("good", "2nd good", "center good", "1st bad", "bad");
+        BisectOutcome outcome = bisect(version("good"), version("bad"), scene);
+        assertThat(outcome.result).hasValue(bisectResult(suspect(version("center good")), suspect(version("1st bad"))));
+    }
+
     private RecordingScene suspects(String ... versions) {
         List<Suspect> suspects = Arrays.stream(versions).map(version -> suspect(version(version))).collect(Collectors.toList());
         return new RecordingScene(suspects);
     }
-
 }
