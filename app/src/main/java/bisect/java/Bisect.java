@@ -1,8 +1,6 @@
 package bisect.java;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.OptionalInt;
 import java.util.stream.IntStream;
 
 import static bisect.java.BisectOutcome.bisectOutcome;
@@ -10,10 +8,6 @@ import static bisect.java.BisectResult.bisectResult;
 import static bisect.java.Lists.splitOnCenter;
 
 public class Bisect {
-
-    record Blub(int start, int end) {
-    }
-
 
     public static BisectOutcome bisect(Version knownGood, Version knownBad, Scene scene) {
         if (knownGood.equals(knownBad)) {
