@@ -1,15 +1,18 @@
 package bisect.java;
 
-import java.util.Arrays;
 import java.util.List;
 
-import static bisect.java.Suspect.suspect;
-import static bisect.java.Version.version;
-
 public class RecordingScene implements Scene {
+
+    private final List<Suspect> suspects;
+
+    public RecordingScene(List<Suspect> suspects) {
+        this.suspects = suspects;
+    }
+
     @Override
     public List<Suspect> suspects() {
-        return Arrays.asList(suspect(version("good")), suspect(version("bad")));
+        return suspects;
     }
 
     @Override
