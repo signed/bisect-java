@@ -64,6 +64,20 @@ class BisectTest {
         assertThat(error).isEqualTo("bad version not in suspects");
     }
 
+    @Test
+    void suspectsHaveBeInOrderKnowGoodHasToComeBeforeKnownBad() {
+        String error = bisectFail("good", "bad", suspects("bad","good"));
+
+        assertThat(error).isEqualTo("bad version before good version");
+    }
+
+    @Test
+    void knowGoodAndKnownBadCanNotBeTheSame() {
+        String error = bisectFail("same", "same", suspects());
+
+        assertThat(error).isEqualTo("knownGood and knowBad are the same");
+    }
+
     @SuppressWarnings("SameParameterValue")
     private BisectResult bisectSuccess(String knownGood, String knownBad, RecordingScene scene) {
         BisectOutcome outcome = bisect(version(knownGood), version(knownBad), scene);
