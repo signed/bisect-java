@@ -13,7 +13,13 @@ public class Bisect {
         List<Suspect> extendedSuspects = scene.suspects();
 
         Optional<Suspect> lastKnowGood = extendedSuspects.stream().filter(suspect -> knownGood.equals(suspect.version()) ).findFirst();
+        if (lastKnowGood.isEmpty()) {
+            return BisectOutcome.error("good version not in suspects");
+        }
         Optional<Suspect> firstKnowBad = extendedSuspects.stream().filter(suspect -> knownBad.equals(suspect.version())).findFirst();
+        if (firstKnowBad.isEmpty()) {
+            return BisectOutcome.error("bad version not in suspects");
+        }
         List<Suspect> suspects = extendedSuspects.subList(1, extendedSuspects.size() - 1);
         Split<Suspect> split = splitOnCenter(suspects);
 

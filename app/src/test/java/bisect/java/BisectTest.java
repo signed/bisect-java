@@ -50,11 +50,30 @@ class BisectTest {
         assertThat(scene.checkedVersions).containsExactlyElementsIn(versions("center skip", "1st bad", "2nd good")).inOrder();
     }
 
+    @Test
+    void failIfKnownGoodVersionIsNotInSuspects() {
+        String error = bisectFail("good", "does not matter", suspects());
+
+        assertThat(error).isEqualTo("good version not in suspects");
+    }
+
+    @Test
+    void failIfKnownBadVersionIsNotInSuspects() {
+        String error = bisectFail("good", "bad", suspects("good"));
+
+        assertThat(error).isEqualTo("bad version not in suspects");
+    }
+
     @SuppressWarnings("SameParameterValue")
     private BisectResult bisectSuccess(String knownGood, String knownBad, RecordingScene scene) {
         BisectOutcome outcome = bisect(version(knownGood), version(knownBad), scene);
         Optional<BisectResult> result = outcome.result;
         return result.orElseThrow();
+    }
+
+    private String bisectFail(String knowGood, String knownBad, RecordingScene scene) {
+        BisectOutcome outcome = bisect(version(knowGood), version(knownBad), scene);
+        return outcome.error.orElseThrow();
     }
 
     private List<Version> versions(String... versionStrings) {
