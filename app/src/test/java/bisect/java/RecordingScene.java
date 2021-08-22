@@ -6,7 +6,7 @@ import java.util.List;
 public class RecordingScene implements Scene {
 
     private final List<Suspect> suspects;
-    public final List<Version> checked = new LinkedList<>();
+    public final List<Version> checkedVersions = new LinkedList<>();
 
     public RecordingScene(List<Suspect> suspects) {
         this.suspects = suspects;
@@ -33,7 +33,7 @@ public class RecordingScene implements Scene {
         if ("bad".equals(versionString) ) {
             throw new RuntimeException("you should not check known bad");
         }
-        this.checked.add(version);
+        this.checkedVersions.add(version);
         if (versionString.contains("good")) {
             return CheckResult.Good;
         }
