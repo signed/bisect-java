@@ -20,8 +20,20 @@ public class RecordingScene implements Scene {
     @Override
     public CheckResult check(Suspect suspect) {
         Version version = suspect.version();
-        this.checked.add(version);
         String versionString = version.string();
+        if (versionString.contains("before")) {
+            throw new RuntimeException("you should not check suspects before knowGood");
+        }
+        if (versionString.contains("after")) {
+            throw new RuntimeException("you should not check suspects after known bad");
+        }
+        if ("good".equals(versionString) ) {
+            throw new RuntimeException("you should not check known good");
+        }
+        if ("bad".equals(versionString) ) {
+            throw new RuntimeException("you should not check known bad");
+        }
+        this.checked.add(version);
         if (versionString.contains("good")) {
             return CheckResult.Good;
         }
